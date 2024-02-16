@@ -1,0 +1,14 @@
+name: Keep Alive
+
+on:
+  schedule:
+    # "*/10 * * * *" は10分ごとにジョブを実行するcronスケジュールです。
+    - cron: '*/10 * * * *'
+
+jobs:
+  keep_alive:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Request
+        run: curl -s https://prod-asupiyo-bot.onrender.com > /dev/null
