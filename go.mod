@@ -3,11 +3,16 @@ module asupiyo-bot
 go 1.20
 
 require (
+	github.com/cosmtrek/air v1.49.0
+	github.com/joho/godotenv v1.5.1
+	github.com/line/line-bot-sdk-go/v8 v8.4.0
+)
+
+require (
 	dario.cat/mergo v1.0.0 // indirect
 	github.com/bep/godartsass v0.16.0 // indirect
 	github.com/bep/golibsass v1.1.0 // indirect
 	github.com/cli/safeexec v1.0.0 // indirect
-	github.com/cosmtrek/air v1.49.0 // indirect
 	github.com/creack/pty v1.1.18 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
