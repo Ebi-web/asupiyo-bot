@@ -45,19 +45,36 @@ func main() {
 			case webhook.MessageEvent:
 				switch message := e.Message.(type) {
 				case webhook.TextMessageContent:
-					if _, err = bot.ReplyMessage(
-						&messaging_api.ReplyMessageRequest{
-							ReplyToken: e.ReplyToken,
-							Messages: []messaging_api.MessageInterface{
-								messaging_api.TextMessage{
-									Text: message.Text,
+					if message.Text == "たまご" || message.Text == "ひよこ" || message.Text == "にわとり" {
+						if _, err = bot.ReplyMessage(
+							&messaging_api.ReplyMessageRequest{
+								ReplyToken: e.ReplyToken,
+								Messages: []messaging_api.MessageInterface{
+									messaging_api.TextMessage{
+										Text: "ピヨピヨ",
+									},
 								},
 							},
-						},
-					); err != nil {
-						log.Print(err)
+						); err != nil {
+							log.Print(err)
+						} else {
+							log.Println("Sent text reply.")
+						}
 					} else {
-						log.Println("Sent text reply.")
+						if _, err = bot.ReplyMessage(
+							&messaging_api.ReplyMessageRequest{
+								ReplyToken: e.ReplyToken,
+								Messages: []messaging_api.MessageInterface{
+									messaging_api.TextMessage{
+										Text: message.Text,
+									},
+								},
+							},
+						); err != nil {
+							log.Print(err)
+						} else {
+							log.Println("Sent text reply.")
+						}
 					}
 				case webhook.StickerMessageContent:
 					replyMessage := fmt.Sprintf(
