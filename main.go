@@ -56,7 +56,8 @@ func setupBot() (*messaging_api.MessagingApiAPI, error) {
 func setupTextEvents(bot *messaging_api.MessagingApiAPI) []event.TextMessageEvent {
 	chickenEvent := event.NewChickenEvent(bot)
 	defaultEvent := event.NewDefaultEvent(bot)
-	return []event.TextMessageEvent{chickenEvent, defaultEvent}
+	rajangEvent := event.NewRajangEvent(bot)
+	return []event.TextMessageEvent{chickenEvent, defaultEvent, rajangEvent}
 }
 
 func handleCallback(w http.ResponseWriter, req *http.Request, bot *messaging_api.MessagingApiAPI, textEvents []event.TextMessageEvent) {
