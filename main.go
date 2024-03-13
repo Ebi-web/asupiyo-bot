@@ -1,12 +1,13 @@
 package main
 
 import (
-	"asupiyo-bot/event"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"asupiyo-bot/event"
 
 	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
@@ -44,9 +45,9 @@ func main() {
 		}
 
 		log.Println("Handling events...")
-		for _, callbaclRequest := range cb.Events {
-			log.Printf("/callback called%+v...\n", callbaclRequest)
-			switch e := callbaclRequest.(type) {
+		for _, callbackRequest := range cb.Events {
+			log.Printf("/callback called%+v...\n", callbackRequest)
+			switch e := callbackRequest.(type) {
 			case webhook.MessageEvent:
 				switch message := e.Message.(type) {
 				case webhook.TextMessageContent:
@@ -76,7 +77,7 @@ func main() {
 					log.Printf("Unsupported message content: %T\n", e.Message)
 				}
 			default:
-				log.Printf("Unsupported message: %T\n", callbaclRequest)
+				log.Printf("Unsupported message: %T\n", callbackRequest)
 			}
 		}
 	})
