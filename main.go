@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"asupiyo-bot/event"
+
 	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v8/linebot/messaging_api"
 	"github.com/line/line-bot-sdk-go/v8/linebot/webhook"
@@ -20,6 +22,11 @@ func main() {
 	)
 	if err != nil {
 		log.Fatal(err)
+	}
+	chickenEvent := event.NewChickenEvent(bot)
+	defaultEvent := event.NewDefaultEvent(bot)
+	textEvents := []event.TextMessageEvent{
+		chickenEvent, defaultEvent,
 	}
 
 	// Setup HTTP Server for receiving requests from LINE platform
@@ -38,42 +45,16 @@ func main() {
 		}
 
 		log.Println("Handling events...")
-		for _, event := range cb.Events {
-			log.Printf("/callback called%+v...\n", event)
-
-			switch e := event.(type) {
+		for _, callbackRequest := range cb.Events {
+			log.Printf("/callback called%+v...\n", callbackRequest)
+			switch e := callbackRequest.(type) {
 			case webhook.MessageEvent:
 				switch message := e.Message.(type) {
 				case webhook.TextMessageContent:
-					if message.Text == "たまご" || message.Text == "ひよこ" || message.Text == "にわとり" {
-						if _, err = bot.ReplyMessage(
-							&messaging_api.ReplyMessageRequest{
-								ReplyToken: e.ReplyToken,
-								Messages: []messaging_api.MessageInterface{
-									messaging_api.TextMessage{
-										Text: "ピヨピヨ",
-									},
-								},
-							},
-						); err != nil {
-							log.Print(err)
-						} else {
-							log.Println("Sent text reply.")
-						}
-					} else {
-						if _, err = bot.ReplyMessage(
-							&messaging_api.ReplyMessageRequest{
-								ReplyToken: e.ReplyToken,
-								Messages: []messaging_api.MessageInterface{
-									messaging_api.TextMessage{
-										Text: message.Text,
-									},
-								},
-							},
-						); err != nil {
-							log.Print(err)
-						} else {
-							log.Println("Sent text reply.")
+					for _, textEvent := range textEvents {
+						if textEvent.IsApplicable(message.Text) {
+							_ = textEvent.Handle(message, e) // error handlinしないと！！
+							break
 						}
 					}
 				case webhook.StickerMessageContent:
@@ -96,7 +77,7 @@ func main() {
 					log.Printf("Unsupported message content: %T\n", e.Message)
 				}
 			default:
-				log.Printf("Unsupported message: %T\n", event)
+				log.Printf("Unsupported message: %T\n", callbackRequest)
 			}
 		}
 	})
